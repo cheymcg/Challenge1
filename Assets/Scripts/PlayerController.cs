@@ -13,13 +13,17 @@ public class PlayerController : MonoBehaviour, RollABallControls.IPlayerActions
     private int count;
     public Text countText;
     public Text winText;
+    private int lives;
+    public Text livesText;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         count = 0;
+        lives = 3;
         SetCountText ();
+        SetLivesText ();
         winText.text = "";
     }
 
@@ -53,14 +57,37 @@ public class PlayerController : MonoBehaviour, RollABallControls.IPlayerActions
             count = count + 1;
             SetCountText ();
         }
+
+        else if (other.gameObject.CompareTag("Enemy"))
+        {
+            other.gameObject.SetActive (false);
+            lives = lives - 1;
+            SetLivesText ();
+        }
+        
+        if (count == 12)
+        {
+            transform.position = new Vector3(-5.0f, 0.5f, -25.0f);
+        }
     }
 
     void SetCountText ()
     {
         countText.text = "Count: " + count.ToString ();
-        if (count >=12)
+        if (count >=20)
         {
             winText.text = "Congrats! Made by Cheyenne M";
+            Destroy(this);
+        }
+    }
+
+    void SetLivesText ()
+    {
+        livesText.text = "Lives: " + lives.ToString ();
+        if (lives == 0)
+        {
+            winText.text = "You Lose!";
+            Destroy(this);
         }
     }
 }
